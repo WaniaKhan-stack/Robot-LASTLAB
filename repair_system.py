@@ -1,4 +1,4 @@
-from robot_components import Robot
+from robot_components import *
 from abc import ABC, abstractmethod
 
 class DiagnosticEngine:
@@ -302,3 +302,135 @@ class RepairShop:
                 return f"Repair ticket {ticket.ticket_id} completed."
 
         raise ValueError(f"No open repair ticket found for robot {robot_id}.")
+
+
+
+# ==============================
+# ROBOT REPAIR SYSTEM SIMULATION
+# ==============================
+
+# Creating robot objects
+robot1 = HelperBot("RB1001", "Buddy")
+robot2 = ExplorerBot("RB1002", "Scout")
+robot3 = KitchenBot("RB1003", "Chef")
+
+# Creating RepairShop object
+shop = RepairShop()
+
+
+# Damaging robot components for testing
+robot1.get_component("battery").set_health(30)
+
+robot2.get_component("motor").damage(50)
+
+robot3.get_component("battery").use(85)
+
+
+# Storing all robots in a list
+robots = [robot1, robot2, robot3]
+
+
+# STEP 1: Display robot information and diagnosis
+
+print("\n========== ROBOT DIAGNOSIS ==========")
+
+for robot in robots:
+
+    print("\nRobot Name:", robot.name)
+    print("Robot ID:", robot.get_robot_id())
+
+    diagnostic_results = shop.inspect_robot(robot)
+
+    if diagnostic_results:
+
+        print("\nFaulty Components:")
+
+        for result in diagnostic_results:
+            print("Component:", result["component"])
+            print("Health:", result["health"], "%")
+            print("Suggestion:", result["suggestion"])
+
+    else:
+        print("No faulty components found!")
+
+
+# STEP 2: Display inventory before repairs
+
+print("\n========== INVENTORY BEFORE REPAIR ==========")
+
+for part, quantity in shop.inventory.stock.items():
+    print(part, ":", quantity)
+
+
+# STEP 3: Repair faulty components
+
+print("\n========== REPAIR SIMULATION ==========")
+
+for robot in robots:
+
+    faulty_components = robot.get_faulty_components()
+
+    for component in faulty_components:
+
+        print("\nRepairing", component.name, "of", robot.name)
+
+        result = shop.repair_component(robot, component.name)
+
+        print(result)
+
+
+# STEP 4: Display inventory after repairs
+
+print("\n========== INVENTORY AFTER REPAIR ==========")
+
+for part, quantity in shop.inventory.stock.items():
+    print(part, ":", quantity)
+
+
+# STEP 5: Display repair tickets
+
+print("\n========== REPAIR TICKETS ==========")
+
+for ticket in shop.get_tickets():
+
+    print("\nTicket ID:", ticket.ticket_id)
+    print("Robot ID:", ticket.robot_id)
+    print("Status:", ticket.status)
+    print("Notes:", ticket.notes)
+
+
+# STEP 6: Complete all repair tickets
+
+print("\n========== COMPLETING REPAIRS ==========")
+
+for ticket in shop.get_tickets():
+
+    print(shop.finish_repair(ticket.robot_id))
+
+
+# STEP 7: Final diagnosis
+
+print("\n========== FINAL ROBOT STATUS ==========")
+
+for robot in robots:
+
+    print("\nRobot:", robot.name)
+
+    remaining_faults = shop.inspect_robot(robot)
+
+    if remaining_faults:
+        print("Robot still has faulty components.")
+
+        for fault in remaining_faults:
+            print("-", fault["component"])
+
+    else:
+        print("All components are functioning properly!")
+
+
+# STEP 8: Total robots created
+
+print("\n======================================")
+print("TOTAL ROBOTS:", Robot.total_created)
+print("SIMULATION COMPLETED")
+print("======================================")

@@ -438,3 +438,5 @@ if __name__ == "__main__":
 
     print("\n================================")
     print("TOTAL ROBOTS CREATED:", Robot.total_created)
+
+__all__ = ["Robot", "HelperBot", "ExplorerBot", "KitchenBot"]
